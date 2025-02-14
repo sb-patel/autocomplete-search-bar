@@ -6,7 +6,7 @@ function App() {
   const [result, setResult] = useState([]);
 
   const fetchData = async () => {
-    const data = await fetch("https://dummyjson.com/recipes/search?q=");
+    const data = await fetch("https://dummyjson.com/recipes/search?q="+input);
     const json = await data.json();
     setResult(json?.recipes);
   }
@@ -26,11 +26,11 @@ function App() {
       />
       <div className='result-container'>
         {
-          result.map((r) => {
+          result.map((r) => (
               <span className='result' key={r.id}>
                 {r.name}
               </span>
-          })
+          ))
         }
       </div>
     </div>
