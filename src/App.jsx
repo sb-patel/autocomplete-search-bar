@@ -4,15 +4,37 @@ import './App.css'
 function App() {
   const [input, setInput] = useState('');
   const [result, setResult] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+  const [cache, setCache] = useState({});
 
   const fetchData = async () => {
+    if(!input.trim()){
+      setResult([]);
+      return;
+    }
+
+    if(cache[input]){
+      setResult(cache[input]);
+      return;
+    }
+
     const data = await fetch("https://dummyjson.com/recipes/search?q="+input);
     const json = await data.json();
-    setResult(json?.recipes);
+    // setResult(json?.recipes || []);
+
+    if(json){
+      setResult(json.recipes);
+      setCache((prev) => ({...prev, [input]:json.recipes}));
+    }
+    else{
+      setResult([]);
+    }
   }
 
   useEffect(() => {
-    fetchData();
+    const timer = setTimeout(fetchData, 400);
+
+    return () => {clearTimeout(timer)};
   }, [input])
 
   return (
@@ -23,9 +45,11 @@ function App() {
         className='search-input'
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onFocus={() => setShowResult(true)}
+        onBlur={() => setShowResult(false)}
       />
       <div className='result-container'>
-        {
+        { showResult &&
           result.map((r) => (
               <span className='result' key={r.id}>
                 {r.name}

@@ -14,7 +14,7 @@
   border: 1px solid black;
   padding: 5px;
   text-align: left;
-  height: 500px;
+  max-height: 400px;
   overflow-y: scroll;
 }
 
